@@ -876,7 +876,7 @@ export default function MangoMovies() {
       <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-r from-amber-100/40 to-orange-100/40 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
       
       {/* Top bar with profile icon */}
-      <div className="relative flex justify-end p-4 pt-14">
+      <div className="relative flex justify-end p-4 pt-16">
         <button 
           onClick={() => setEditingProfile(true)} 
           className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
@@ -941,7 +941,7 @@ export default function MangoMovies() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-amber-200/40 to-orange-200/40 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
         
         {/* Top bar with back button */}
-        <div className="relative flex justify-start p-4 pt-14">
+        <div className="relative flex justify-start p-4 pt-16">
           <button 
             onClick={goBack}
             className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
@@ -998,7 +998,7 @@ export default function MangoMovies() {
       <div className="absolute bottom-1/3 left-0 w-64 h-64 bg-gradient-to-tr from-amber-200/20 to-orange-200/20 rounded-full blur-3xl -translate-x-1/2" />
       
       {/* Top bar with back button */}
-      <div className="relative flex justify-start p-4 pt-14">
+      <div className="relative flex justify-start p-4 pt-16">
         <button 
           onClick={() => setStage('intro')}
           className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"

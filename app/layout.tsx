@@ -35,10 +35,10 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="theme-color" content="#fff7ed" />
       </head>
-      <body className="bg-orange-50">
+      <body className="bg-[#fff7ed]">
         <ServiceWorkerRegistration />
         {children}
       </body>
