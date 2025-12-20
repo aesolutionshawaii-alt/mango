@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { User, ChevronLeft, RefreshCw, Check, Home } from 'lucide-react';
 
 // Types
 interface Profile {
@@ -714,6 +715,15 @@ function MovieCard({ movie, index, onSelect, onSeenIt, isSwapping }: { movie: Mo
   );
 }
 
+// Loading messages
+const LOADING_MESSAGES = [
+  "Picking the ripest movies...",
+  "Checking the vibe...",
+  "Asking the mango tree...",
+  "Almost ripe...",
+  "Finding your perfect match...",
+];
+
 // Main App
 export default function MangoMovies() {
   const [loading, setLoading] = useState(true);
@@ -727,7 +737,35 @@ export default function MangoMovies() {
   const [editingProfile, setEditingProfile] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [swappingIndex, setSwappingIndex] = useState<number | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
   const sessionContext = useRef<{ moodProfile: MoodAnswer[] | null; excludedMovies: string[] }>({ moodProfile: null, excludedMovies: [] });
+  const touchStartX = useRef<number | null>(null);
+  
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  
+  const createSwipeEnd = (onSwipeBack: () => void) => (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchEndX - touchStartX.current;
+    if (touchStartX.current < 50 && diff > 100) {
+      onSwipeBack();
+    }
+    touchStartX.current = null;
+  };
+  
+  // Cycle loading messages
+  useEffect(() => {
+    if (stage !== 'loading') return;
+    let index = 0;
+    const interval = setInterval(() => {
+      index = (index + 1) % LOADING_MESSAGES.length;
+      setLoadingMessage(LOADING_MESSAGES[index]);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [stage]);
 
   useEffect(() => { loadProfile(); }, []);
 
@@ -827,55 +865,96 @@ export default function MangoMovies() {
   if (selectedMovie) return <MovieDetailModal movie={selectedMovie} profile={profile} onClose={() => setSelectedMovie(null)} onMarkWatched={markAsWatched} />;
 
   if (stage === 'intro') return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center p-4">
-      <div className="max-w-lg w-full">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🥭🎬🌴</div>
-          <h1 className="text-5xl font-bold text-white mb-2">Mango</h1>
-          <p className="text-amber-200 text-lg">{profile.name ? `Hey ${profile.name}! ` : ''}Grab your dried mango, let&apos;s find your flick.</p>
-        </div>
-        <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-6 border border-amber-500/30">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-white font-semibold">Your Profile</h2>
-            <button onClick={() => setEditingProfile(true)} className="text-amber-300 hover:text-white text-sm">Edit ✏️</button>
-          </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-amber-300">Type:</span><span className="text-white">{VIEWER_TYPES.find(t => t.id === profile.viewerType)?.label}</span></div>
-            <div className="flex justify-between"><span className="text-amber-300">Love:</span><span className="text-green-400">{profile.lovedGenres.slice(0, 3).join(', ')}</span></div>
-            <div className="flex justify-between"><span className="text-amber-300">Streaming:</span><span className="text-white">{profile.streamingServices.length} services</span></div>
-            {profile.recentlyWatched.filter(m => m.trim()).length > 0 && (
-              <div className="flex justify-between"><span className="text-amber-300">Seen:</span><span className="text-orange-300">{profile.recentlyWatched.filter(m => m.trim()).length} movies tracked</span></div>
-            )}
-          </div>
-        </div>
-        <button onClick={startQuiz} className="w-full py-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-500 text-white font-bold text-xl rounded-xl hover:from-yellow-500 hover:via-orange-600 hover:to-amber-600 transition-all transform hover:scale-[1.02] shadow-lg shadow-orange-500/30">
-          🥭 What&apos;s Your Mood Tonight? →
+    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900">
+      {/* Top bar with profile icon */}
+      <div className="flex justify-end p-4 pt-14">
+        <button 
+          onClick={() => setEditingProfile(true)} 
+          className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-amber-200 hover:bg-white/20 hover:text-white transition-all"
+        >
+          <User size={20} />
         </button>
-        {error && <div className="mt-4 bg-red-500/20 border border-red-400 rounded-xl p-4 text-red-200 text-center">{error}</div>}
+      </div>
+      
+      <div className="flex items-center justify-center px-4 pb-8">
+        <div className="max-w-lg w-full">
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-4">🥭🎬🌴</div>
+            <h1 className="text-5xl font-bold text-white mb-2">Mango</h1>
+            <p className="text-amber-200 text-lg">{profile.name ? `Hey ${profile.name}! ` : ''}Grab your dried mango, let&apos;s find your flick.</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-6 border border-amber-500/30">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-white font-semibold">Your Profile</h2>
+              <button onClick={() => setEditingProfile(true)} className="text-amber-300 hover:text-white text-sm">Edit ✏️</button>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between"><span className="text-amber-300">Type:</span><span className="text-white">{VIEWER_TYPES.find(t => t.id === profile.viewerType)?.label}</span></div>
+              <div className="flex justify-between"><span className="text-amber-300">Love:</span><span className="text-green-400">{profile.lovedGenres.slice(0, 3).join(', ')}</span></div>
+              <div className="flex justify-between"><span className="text-amber-300">Streaming:</span><span className="text-white">{profile.streamingServices.length} services</span></div>
+              {profile.recentlyWatched.filter(m => m.trim()).length > 0 && (
+                <div className="flex justify-between"><span className="text-amber-300">Seen:</span><span className="text-orange-300">{profile.recentlyWatched.filter(m => m.trim()).length} movies tracked</span></div>
+              )}
+            </div>
+          </div>
+          <button onClick={startQuiz} className="w-full py-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-500 text-white font-bold text-xl rounded-xl hover:from-yellow-500 hover:via-orange-600 hover:to-amber-600 transition-all transform hover:scale-[1.02] shadow-lg shadow-orange-500/30">
+            🥭 What&apos;s Your Mood Tonight? →
+          </button>
+          {error && <div className="mt-4 bg-red-500/20 border border-red-400 rounded-xl p-4 text-red-200 text-center">{error}</div>}
+        </div>
       </div>
     </div>
   );
 
   if (stage === 'questions') {
     const q = questions[currentQuestion];
+    
+    const goBack = () => {
+      if (currentQuestion === 0) {
+        setStage('intro');
+      } else {
+        const prevQuestion = questions[currentQuestion - 1];
+        const newAnswers = { ...answers };
+        delete newAnswers[prevQuestion.id];
+        setAnswers(newAnswers);
+        setCurrentQuestion(currentQuestion - 1);
+      }
+    };
+    
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center p-4">
-        <div className="max-w-lg w-full">
-          <div className="mb-8">
-            <div className="flex justify-between text-amber-200 text-sm mb-2"><span>Question {currentQuestion + 1} of {questions.length}</span><span>🥭</span></div>
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all" style={{ width: `${(currentQuestion / questions.length) * 100}%` }} />
+      <div 
+        className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={createSwipeEnd(goBack)}
+      >
+        {/* Top bar with back button */}
+        <div className="flex justify-start p-4 pt-14">
+          <button 
+            onClick={goBack}
+            className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-amber-200 hover:bg-white/20 hover:text-white transition-all"
+          >
+            <ChevronLeft size={24} />
+          </button>
+        </div>
+        
+        <div className="flex items-center justify-center px-4 pb-8">
+          <div className="max-w-lg w-full">
+            <div className="mb-8">
+              <div className="flex justify-between text-amber-200 text-sm mb-2"><span>Question {currentQuestion + 1} of {questions.length}</span><span>🥭</span></div>
+              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }} />
+              </div>
             </div>
-          </div>
-          <div className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-amber-500/30">
-            <h2 className="text-2xl font-bold text-white mb-6">{q.question}</h2>
-            <div className="space-y-3">
-              {q.options.map(option => (
-                <button key={option.value} onClick={() => handleAnswer(q.id, option)}
-                  className="w-full p-4 bg-white/5 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-orange-500/20 border border-white/10 hover:border-amber-400 rounded-xl text-left text-white transition-all">
-                  {option.label}
-                </button>
-              ))}
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-amber-500/30">
+              <h2 className="text-2xl font-bold text-white mb-6">{q.question}</h2>
+              <div className="space-y-3">
+                {q.options.map(option => (
+                  <button key={option.value} onClick={() => handleAnswer(q.id, option)}
+                    className="w-full p-4 bg-white/5 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-orange-500/20 border border-white/10 hover:border-amber-400 rounded-xl text-left text-white transition-all">
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -887,29 +966,69 @@ export default function MangoMovies() {
     <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center">
       <div className="text-center">
         <div className="text-6xl mb-4 animate-bounce">🥭</div>
-        <h2 className="text-2xl font-bold text-white mb-2">Picking the ripest movies...</h2>
-        <p className="text-amber-200">Finding your perfect match</p>
+        <h2 className="text-2xl font-bold text-white mb-2">{loadingMessage}</h2>
+        <p className="text-amber-200">Hang tight</p>
       </div>
     </div>
   );
 
   if (stage === 'results' && recommendations) return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 p-4 py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-6">
-          <div className="text-4xl mb-2">🥭🎬🥭</div>
-          <h1 className="text-3xl font-bold text-white mb-2">Your Fresh Picks</h1>
-          <p className="text-amber-200 italic">&quot;{recommendations.moodSummary}&quot;</p>
+    <div 
+      className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={createSwipeEnd(() => setStage('intro'))}
+    >
+      {/* Top bar with back button */}
+      <div className="flex justify-start p-4 pt-14">
+        <button 
+          onClick={() => setStage('intro')}
+          className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-amber-200 hover:bg-white/20 hover:text-white transition-all"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      </div>
+      
+      <div className="px-4 pb-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-6">
+            <div className="text-4xl mb-2">🥭🎬🥭</div>
+            <h1 className="text-3xl font-bold text-white mb-2">Your Fresh Picks</h1>
+            <p className="text-amber-200 italic">&quot;{recommendations.moodSummary}&quot;</p>
+          </div>
+          <div className="space-y-4 mb-8">
+            {recommendations.recommendations?.map((movie, index) => (
+              <MovieCard key={`${movie.title}-${movie.year}-${index}`} movie={movie} index={index} onSelect={setSelectedMovie} onSeenIt={handleSeenIt} isSwapping={swappingIndex === index} />
+            ))}
+          </div>
+          <div className="flex gap-4">
+            <button onClick={startQuiz} className="flex-1 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 border border-amber-500/30 flex items-center justify-center gap-2">
+              <RefreshCw size={20} /> Refresh
+            </button>
+            <button onClick={() => setStage('enjoy')} className="flex-1 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2">
+              <Check size={20} /> Done
+            </button>
+          </div>
         </div>
-        <div className="space-y-4 mb-8">
-          {recommendations.recommendations?.map((movie, index) => (
-            <MovieCard key={`${movie.title}-${movie.year}-${index}`} movie={movie} index={index} onSelect={setSelectedMovie} onSeenIt={handleSeenIt} isSwapping={swappingIndex === index} />
-          ))}
-        </div>
-        <div className="flex gap-4">
-          <button onClick={startQuiz} className="flex-1 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30">🔄 Different Mood</button>
-          <button onClick={() => setStage('intro')} className="flex-1 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 border border-amber-500/30">🏠 Home</button>
-        </div>
+      </div>
+    </div>
+  );
+
+  if (stage === 'enjoy') return (
+    <div 
+      className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center p-4"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={createSwipeEnd(() => setStage('intro'))}
+    >
+      <div className="text-center">
+        <div className="text-8xl mb-6">🥭🍿</div>
+        <h1 className="text-4xl font-bold text-white mb-4">Enjoy your movie!</h1>
+        <p className="text-amber-200 text-lg mb-8">Grab that dried mango and settle in.</p>
+        <button 
+          onClick={() => setStage('intro')} 
+          className="px-8 py-3 bg-white/10 text-amber-200 rounded-xl hover:bg-white/20 border border-amber-500/30 flex items-center justify-center gap-2 mx-auto"
+        >
+          <Home size={18} /> Back to Home
+        </button>
       </div>
     </div>
   );
