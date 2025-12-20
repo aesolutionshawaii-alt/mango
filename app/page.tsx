@@ -278,18 +278,18 @@ function MangoRating({ rating, onRate, readonly = false, size = 'normal' }: {
 // Review Card Component
 function ReviewCard({ review, isExternal = false }: { review: Review; isExternal?: boolean }) {
   return (
-    <div className={`p-4 rounded-xl ${isExternal ? 'bg-amber-500/10 border border-amber-400/30' : 'bg-orange-500/10 border border-orange-400/30'}`}>
+    <div className={`p-4 rounded-2xl ${isExternal ? 'bg-amber-50 border border-amber-200' : 'bg-orange-50 border border-orange-200'}`}>
       <div className="flex justify-between items-start mb-2">
         <div>
-          <span className="font-medium text-white">{review.author}</span>
+          <span className="font-medium text-gray-800">{review.author}</span>
           {review.source && (
-            <span className="text-xs text-amber-200 ml-2 bg-white/10 px-2 py-0.5 rounded">{review.source}</span>
+            <span className="text-xs text-gray-500 ml-2 bg-gray-100 px-2 py-0.5 rounded">{review.source}</span>
           )}
         </div>
         <MangoRating rating={review.rating} readonly size="small" />
       </div>
-      <p className="text-orange-100 text-sm">{review.text}</p>
-      {review.date && <p className="text-amber-300/60 text-xs mt-2">{review.date}</p>}
+      <p className="text-gray-600 text-sm">{review.text}</p>
+      {review.date && <p className="text-gray-400 text-xs mt-2">{review.date}</p>}
     </div>
   );
 }
@@ -320,30 +320,30 @@ function WriteReviewModal({ movie, profile, onSubmit, onClose }: {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-      <div className="bg-gradient-to-br from-amber-900 to-orange-900 rounded-2xl p-6 max-w-md w-full border border-amber-500/30">
-        <h2 className="text-xl font-bold text-white mb-2">Review {movie.title}</h2>
-        <p className="text-amber-200 text-sm mb-4">Share your thoughts with the community</p>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl shadow-orange-200/50 border border-orange-100">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">Review {movie.title}</h2>
+        <p className="text-gray-500 text-sm mb-4">Share your thoughts with the community</p>
         <div className="mb-4">
-          <label className="block text-amber-100 mb-2">Your Rating</label>
+          <label className="block text-gray-600 mb-2">Your Rating</label>
           <MangoRating rating={rating} onRate={setRating} />
         </div>
         <div className="mb-6">
-          <label className="block text-amber-100 mb-2">Your Review (optional)</label>
+          <label className="block text-gray-600 mb-2">Your Review (optional)</label>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="What did you think?"
             rows={4}
-            className="w-full p-3 bg-white/10 border border-amber-500/30 rounded-xl text-white placeholder-amber-300/50 focus:outline-none focus:border-amber-400 resize-none"
+            className="w-full p-3 bg-orange-50/50 border border-orange-200 rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-400 resize-none"
           />
         </div>
         <div className="flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20">Cancel</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-2xl hover:bg-gray-200 font-medium">Cancel</button>
           <button
             onClick={handleSubmit}
             disabled={rating === 0 || submitting}
-            className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 disabled:opacity-50"
+            className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 font-medium"
           >
             {submitting ? 'Posting...' : 'Post Review 🥭'}
           </button>
@@ -413,79 +413,79 @@ function MovieDetailModal({ movie, profile, onClose, onMarkWatched }: {
     : null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-40 overflow-y-auto">
-      <div className="bg-gradient-to-br from-amber-900 to-orange-900 rounded-2xl max-w-2xl w-full my-8 max-h-[90vh] overflow-y-auto border border-amber-500/30">
-        <div className="p-6 border-b border-amber-500/20">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40 overflow-y-auto">
+      <div className="bg-white rounded-3xl max-w-2xl w-full my-8 max-h-[90vh] overflow-y-auto shadow-2xl shadow-orange-200/50 border border-orange-100">
+        <div className="p-6 border-b border-orange-100">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-2xl font-bold text-white">{movie.title}</h2>
+              <h2 className="text-2xl font-bold text-gray-800">{movie.title}</h2>
               <div className="flex gap-3 mt-2 text-sm flex-wrap">
-                <span className="bg-yellow-500/30 text-yellow-200 px-2 py-0.5 rounded font-medium">{movie.year}</span>
-                <span className="bg-orange-500/30 text-orange-200 px-2 py-0.5 rounded">{movie.streaming}</span>
-                <span className="bg-white/10 text-amber-200 px-2 py-0.5 rounded">{movie.genre}</span>
-                <span className="text-amber-200">{movie.runtime}</span>
+                <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-medium">{movie.year}</span>
+                <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded">{movie.streaming}</span>
+                <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{movie.genre}</span>
+                <span className="text-gray-500">{movie.runtime}</span>
               </div>
             </div>
-            <button onClick={onClose} className="text-amber-300 hover:text-white text-2xl">✕</button>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
           </div>
           
           {movie.director && (
             <div className="mt-4">
-              <span className="text-amber-400 text-sm">Directed by </span>
-              <span className="text-white font-medium">{movie.director}</span>
+              <span className="text-orange-500 text-sm">Directed by </span>
+              <span className="text-gray-800 font-medium">{movie.director}</span>
             </div>
           )}
           
           {movie.cast && movie.cast.length > 0 && (
             <div className="mt-3">
-              <span className="text-amber-400 text-sm block mb-2">Starring</span>
+              <span className="text-orange-500 text-sm block mb-2">Starring</span>
               <div className="flex flex-wrap gap-2">
                 {movie.cast.map((actor, idx) => (
-                  <span key={idx} className="bg-white/10 text-white px-3 py-1 rounded-full text-sm">🎭 {actor}</span>
+                  <span key={idx} className="bg-orange-50 text-gray-700 px-3 py-1 rounded-full text-sm">🎭 {actor}</span>
                 ))}
               </div>
             </div>
           )}
           
-          <p className="text-orange-100 mt-4">{movie.pitch}</p>
+          <p className="text-gray-600 mt-4">{movie.pitch}</p>
           
           <div className="flex gap-4 mt-4 flex-wrap">
             {externalReviews.rtScore && (
-              <div className="bg-red-500/20 px-3 py-1 rounded-lg">
-                <span className="text-red-400 font-bold">🍅 {externalReviews.rtScore}</span>
+              <div className="bg-red-50 px-3 py-1 rounded-lg">
+                <span className="text-red-500 font-bold">🍅 {externalReviews.rtScore}</span>
               </div>
             )}
             {externalReviews.imdbScore && (
-              <div className="bg-yellow-500/20 px-3 py-1 rounded-lg">
-                <span className="text-yellow-400 font-bold">⭐ {externalReviews.imdbScore}</span>
+              <div className="bg-amber-50 px-3 py-1 rounded-lg">
+                <span className="text-amber-600 font-bold">⭐ {externalReviews.imdbScore}</span>
               </div>
             )}
             {communityAvgRating && (
-              <div className="bg-orange-500/20 px-3 py-1 rounded-lg">
-                <span className="text-orange-300 font-bold">🥭 {communityAvgRating}/5</span>
+              <div className="bg-orange-50 px-3 py-1 rounded-lg">
+                <span className="text-orange-500 font-bold">🥭 {communityAvgRating}/5</span>
                 <span className="text-orange-400 text-sm ml-1">({communityReviews.length})</span>
               </div>
             )}
-            <div className="bg-green-500/20 px-3 py-1 rounded-lg">
-              <span className="text-green-400 font-bold">🎯 {movie.vibeMatch}%</span>
+            <div className="bg-emerald-50 px-3 py-1 rounded-lg">
+              <span className="text-emerald-500 font-bold">🎯 {movie.vibeMatch}%</span>
             </div>
           </div>
 
           {externalReviews.consensus && (
-            <p className="text-amber-200 italic mt-4 text-sm border-l-2 border-amber-400 pl-3">{externalReviews.consensus}</p>
+            <p className="text-gray-500 italic mt-4 text-sm border-l-2 border-orange-300 pl-3">{externalReviews.consensus}</p>
           )}
         </div>
 
-        <div className="flex border-b border-amber-500/20">
+        <div className="flex border-b border-orange-100">
           <button
             onClick={() => setActiveTab('external')}
-            className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === 'external' ? 'text-white border-b-2 border-amber-400' : 'text-amber-300 hover:text-white'}`}
+            className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === 'external' ? 'text-orange-600 border-b-2 border-orange-400' : 'text-gray-400 hover:text-gray-600'}`}
           >
             🎬 Critics & Press
           </button>
           <button
             onClick={() => setActiveTab('community')}
-            className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === 'community' ? 'text-white border-b-2 border-amber-400' : 'text-amber-300 hover:text-white'}`}
+            className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === 'community' ? 'text-orange-600 border-b-2 border-orange-400' : 'text-gray-400 hover:text-gray-600'}`}
           >
             🥭 Community ({communityReviews.length})
           </button>
@@ -495,35 +495,35 @@ function MovieDetailModal({ movie, profile, onClose, onMarkWatched }: {
           {loadingReviews ? (
             <div className="text-center py-8">
               <div className="animate-bounce text-4xl mb-2">🥭</div>
-              <p className="text-amber-300">Loading reviews...</p>
+              <p className="text-gray-500">Loading reviews...</p>
             </div>
           ) : activeTab === 'external' ? (
             <div className="space-y-3">
               {externalReviews.reviews?.length > 0 ? (
                 externalReviews.reviews.map((review, idx) => <ReviewCard key={idx} review={review} isExternal />)
               ) : (
-                <p className="text-amber-300 text-center py-4">No external reviews found</p>
+                <p className="text-gray-400 text-center py-4">No external reviews found</p>
               )}
             </div>
           ) : (
             <div>
-              <button onClick={() => setShowWriteReview(true)} className="w-full py-3 mb-4 bg-orange-500/20 border border-orange-400/50 text-orange-200 rounded-xl hover:bg-orange-500/30">
+              <button onClick={() => setShowWriteReview(true)} className="w-full py-3 mb-4 bg-orange-50 border border-orange-200 text-orange-600 rounded-2xl hover:bg-orange-100 font-medium">
                 ✍️ Write a Review
               </button>
               <div className="space-y-3">
                 {communityReviews.length > 0 ? (
                   communityReviews.slice().reverse().map((review, idx) => <ReviewCard key={idx} review={review} />)
                 ) : (
-                  <p className="text-amber-300 text-center py-4">No community reviews yet. Be the first!</p>
+                  <p className="text-gray-400 text-center py-4">No community reviews yet. Be the first!</p>
                 )}
               </div>
             </div>
           )}
         </div>
 
-        <div className="p-6 border-t border-amber-500/20 flex gap-3">
-          <button onClick={() => { onMarkWatched(movie); onClose(); }} className="flex-1 py-3 bg-green-500/20 text-green-300 rounded-xl hover:bg-green-500/30">✓ Mark as Watched</button>
-          <button onClick={onClose} className="flex-1 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20">Close</button>
+        <div className="p-6 border-t border-orange-100 flex gap-3">
+          <button onClick={() => { onMarkWatched(movie); onClose(); }} className="flex-1 py-3 bg-emerald-50 text-emerald-600 rounded-2xl hover:bg-emerald-100 font-medium">✓ Mark as Watched</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-2xl hover:bg-gray-200 font-medium">Close</button>
         </div>
       </div>
 
@@ -551,35 +551,39 @@ function ProfileSetup({ onComplete, existingProfile }: { onComplete: (profile: P
   const totalSteps = 6;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center p-4">
-      <div className="max-w-lg w-full">
+    <div className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative gradient blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-200/40 to-amber-200/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-orange-200/30 to-yellow-200/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="relative max-w-lg w-full">
         <div className="mb-6">
-          <div className="flex justify-between text-amber-200 text-sm mb-2">
+          <div className="flex justify-between text-gray-500 text-sm mb-2">
             <span>Profile Setup</span>
             <span>Step {step} of {totalSteps}</span>
           </div>
-          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all duration-300" style={{ width: `${(step / totalSteps) * 100}%` }} />
+          <div className="h-2 bg-orange-100 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-orange-400 to-amber-400 transition-all duration-300" style={{ width: `${(step / totalSteps) * 100}%` }} />
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-amber-500/30">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl shadow-orange-100/50 border border-orange-100">
           {step === 1 && (
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6">🥭 Let&apos;s get to know you</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">🥭 Let&apos;s get to know you</h2>
               <div className="mb-6">
-                <label className="block text-amber-100 mb-2">What should we call you?</label>
+                <label className="block text-gray-600 mb-2">What should we call you?</label>
                 <input type="text" value={profile.name} onChange={(e) => updateProfile('name', e.target.value)} placeholder="Your name"
-                  className="w-full p-3 bg-white/10 border border-amber-500/30 rounded-xl text-white placeholder-amber-300/50 focus:outline-none focus:border-amber-400" />
+                  className="w-full p-3 bg-orange-50/50 border border-orange-200 rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-400" />
               </div>
               <div>
-                <label className="block text-amber-100 mb-3">What kind of movie watcher are you?</label>
+                <label className="block text-gray-600 mb-3">What kind of movie watcher are you?</label>
                 <div className="space-y-2">
                   {VIEWER_TYPES.map(type => (
                     <button key={type.id} onClick={() => updateProfile('viewerType', type.id)}
-                      className={`w-full p-4 rounded-xl text-left transition-all ${profile.viewerType === type.id ? 'bg-gradient-to-r from-amber-500 to-orange-500 border-amber-400' : 'bg-white/5 border-white/10 hover:bg-white/10'} border`}>
-                      <div className="text-white font-medium">{type.label}</div>
-                      <div className="text-amber-100 text-sm">{type.desc}</div>
+                      className={`w-full p-4 rounded-2xl text-left transition-all ${profile.viewerType === type.id ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white border-orange-400' : 'bg-orange-50/50 border-orange-100 hover:bg-orange-100 text-gray-700'} border`}>
+                      <div className={`font-medium ${profile.viewerType === type.id ? 'text-white' : 'text-gray-800'}`}>{type.label}</div>
+                      <div className={`text-sm ${profile.viewerType === type.id ? 'text-orange-100' : 'text-gray-500'}`}>{type.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -589,60 +593,60 @@ function ProfileSetup({ onComplete, existingProfile }: { onComplete: (profile: P
 
           {step === 2 && (
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Genres you love 🌴</h2>
-              <p className="text-amber-200 mb-6">Pick your favorites (at least 2)</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Genres you love 🌴</h2>
+              <p className="text-gray-500 mb-6">Pick your favorites (at least 2)</p>
               <div className="flex flex-wrap gap-2">
                 {GENRES.map(genre => (
                   <button key={genre} onClick={() => toggleArrayItem('lovedGenres', genre)} disabled={profile.hatedGenres.includes(genre)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all ${profile.lovedGenres.includes(genre) ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : profile.hatedGenres.includes(genre) ? 'bg-white/5 text-amber-300/30 cursor-not-allowed' : 'bg-white/10 text-amber-100 hover:bg-white/20'}`}>
+                    className={`px-4 py-2 rounded-full font-medium transition-all ${profile.lovedGenres.includes(genre) ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white' : profile.hatedGenres.includes(genre) ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : 'bg-orange-50 text-gray-600 hover:bg-orange-100'}`}>
                     {profile.lovedGenres.includes(genre) && '🥭 '}{genre}
                   </button>
                 ))}
               </div>
-              {profile.lovedGenres.length > 0 && <p className="text-green-400 mt-4">🥭 {profile.lovedGenres.join(', ')}</p>}
+              {profile.lovedGenres.length > 0 && <p className="text-emerald-600 mt-4">🥭 {profile.lovedGenres.join(', ')}</p>}
             </div>
           )}
 
           {step === 3 && (
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Genres to avoid 🚫</h2>
-              <p className="text-amber-200 mb-6">What do you never want recommended?</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Genres to avoid 🚫</h2>
+              <p className="text-gray-500 mb-6">What do you never want recommended?</p>
               <div className="flex flex-wrap gap-2">
                 {GENRES.map(genre => (
                   <button key={genre} onClick={() => toggleArrayItem('hatedGenres', genre)} disabled={profile.lovedGenres.includes(genre)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all ${profile.hatedGenres.includes(genre) ? 'bg-red-500 text-white' : profile.lovedGenres.includes(genre) ? 'bg-white/5 text-amber-300/30 cursor-not-allowed' : 'bg-white/10 text-amber-100 hover:bg-white/20'}`}>
+                    className={`px-4 py-2 rounded-full font-medium transition-all ${profile.hatedGenres.includes(genre) ? 'bg-red-500 text-white' : profile.lovedGenres.includes(genre) ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : 'bg-orange-50 text-gray-600 hover:bg-orange-100'}`}>
                     {profile.hatedGenres.includes(genre) && '🚫 '}{genre}
                   </button>
                 ))}
               </div>
-              {profile.hatedGenres.length > 0 && <p className="text-red-400 mt-4">🚫 {profile.hatedGenres.join(', ')}</p>}
+              {profile.hatedGenres.length > 0 && <p className="text-red-500 mt-4">🚫 {profile.hatedGenres.join(', ')}</p>}
             </div>
           )}
 
           {step === 4 && (
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Some favorites 🎬</h2>
-              <p className="text-amber-200 mb-6">Name a few movies you love</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Some favorites 🎬</h2>
+              <p className="text-gray-500 mb-6">Name a few movies you love</p>
               <div className="space-y-3">
                 {profile.favoriteMovies.map((movie, index) => (
                   <input key={index} type="text" value={movie} onChange={(e) => updateArrayIndex('favoriteMovies', index, e.target.value)} placeholder={`Favorite movie ${index + 1}`}
-                    className="w-full p-3 bg-white/10 border border-amber-500/30 rounded-xl text-white placeholder-amber-300/50 focus:outline-none focus:border-amber-400" />
+                    className="w-full p-3 bg-orange-50/50 border border-orange-200 rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-400" />
                 ))}
               </div>
-              <button onClick={() => updateProfile('favoriteMovies', [...profile.favoriteMovies, ''])} className="mt-3 text-amber-300 hover:text-amber-100 text-sm">+ Add another</button>
+              <button onClick={() => updateProfile('favoriteMovies', [...profile.favoriteMovies, ''])} className="mt-3 text-orange-500 hover:text-orange-600 text-sm font-medium">+ Add another</button>
             </div>
           )}
 
           {step === 5 && (
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Hard limits 🛑</h2>
-              <p className="text-amber-200 mb-6">Anything we should never recommend?</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Hard limits 🛑</h2>
+              <p className="text-gray-500 mb-6">Anything we should never recommend?</p>
               <div className="space-y-2">
                 {HARD_LIMITS.map(limit => (
                   <button key={limit.id} onClick={() => toggleArrayItem('hardLimits', limit.id)}
-                    className={`w-full p-3 rounded-xl text-left transition-all flex items-center gap-3 ${profile.hardLimits.includes(limit.id) ? 'bg-red-500/30 border-red-400' : 'bg-white/5 border-white/10 hover:bg-white/10'} border`}>
+                    className={`w-full p-3 rounded-2xl text-left transition-all flex items-center gap-3 ${profile.hardLimits.includes(limit.id) ? 'bg-red-50 border-red-300' : 'bg-orange-50/50 border-orange-100 hover:bg-orange-100'} border`}>
                     <span className="text-xl">{profile.hardLimits.includes(limit.id) ? '🚫' : '⬜'}</span>
-                    <span className="text-white">{limit.label}</span>
+                    <span className={profile.hardLimits.includes(limit.id) ? 'text-red-600' : 'text-gray-700'}>{limit.label}</span>
                   </button>
                 ))}
               </div>
@@ -651,12 +655,12 @@ function ProfileSetup({ onComplete, existingProfile }: { onComplete: (profile: P
 
           {step === 6 && (
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Your streaming services 📺</h2>
-              <p className="text-amber-200 mb-6">What do you have access to?</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Your streaming services 📺</h2>
+              <p className="text-gray-500 mb-6">What do you have access to?</p>
               <div className="flex flex-wrap gap-2">
                 {STREAMING_SERVICES.map(service => (
                   <button key={service} onClick={() => toggleArrayItem('streamingServices', service)}
-                    className={`px-4 py-2 rounded-full font-medium transition-all ${profile.streamingServices.includes(service) ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 'bg-white/10 text-amber-100 hover:bg-white/20'}`}>
+                    className={`px-4 py-2 rounded-full font-medium transition-all ${profile.streamingServices.includes(service) ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white' : 'bg-orange-50 text-gray-600 hover:bg-orange-100'}`}>
                     {service}
                   </button>
                 ))}
@@ -665,13 +669,13 @@ function ProfileSetup({ onComplete, existingProfile }: { onComplete: (profile: P
           )}
 
           <div className="flex justify-between mt-8">
-            <button onClick={() => setStep(s => s - 1)} disabled={step === 1} className="px-6 py-2 text-amber-300 hover:text-white disabled:opacity-30">← Back</button>
+            <button onClick={() => setStep(s => s - 1)} disabled={step === 1} className="px-6 py-2 text-orange-500 hover:text-orange-600 disabled:opacity-30 font-medium">← Back</button>
             {step < totalSteps ? (
               <button onClick={() => setStep(s => s + 1)} disabled={(step === 1 && !profile.viewerType) || (step === 2 && profile.lovedGenres.length < 2)}
-                className="px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 disabled:opacity-50">Next →</button>
+                className="px-6 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 font-medium">Next →</button>
             ) : (
               <button onClick={() => onComplete(profile)} disabled={profile.streamingServices.length === 0}
-                className="px-6 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl font-bold">Save Profile 🥭</button>
+                className="px-6 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl font-bold shadow-lg shadow-orange-300/50">Save Profile 🥭</button>
             )}
           </div>
         </div>
@@ -683,33 +687,33 @@ function ProfileSetup({ onComplete, existingProfile }: { onComplete: (profile: P
 // Movie Card Component
 function MovieCard({ movie, index, onSelect, onSeenIt, isSwapping }: { movie: Movie; index: number; onSelect: (movie: Movie) => void; onSeenIt: (movie: Movie, index: number) => void; isSwapping: boolean; }) {
   return (
-    <div className={`bg-white/10 backdrop-blur rounded-2xl p-5 border border-amber-500/30 hover:border-amber-400 transition-all ${isSwapping ? 'opacity-50 animate-pulse' : ''}`}>
+    <div className={`bg-white/80 backdrop-blur-sm rounded-3xl p-5 shadow-lg shadow-orange-100/50 border border-orange-100 hover:shadow-xl hover:shadow-orange-200/50 transition-all ${isSwapping ? 'opacity-50 animate-pulse' : ''}`}>
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-white">{index + 1}. {movie.title}</h3>
+          <h3 className="text-xl font-bold text-gray-800">{index + 1}. {movie.title}</h3>
           <div className="flex gap-2 flex-wrap text-sm mt-1">
-            <span className="bg-yellow-500/30 text-yellow-200 px-2 py-0.5 rounded font-medium">{movie.year}</span>
-            <span className="bg-orange-500/30 text-orange-200 px-2 py-0.5 rounded">{movie.streaming}</span>
-            <span className="bg-white/10 text-amber-200 px-2 py-0.5 rounded">{movie.genre}</span>
-            <span className="text-amber-200">{movie.runtime}</span>
+            <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-medium">{movie.year}</span>
+            <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded">{movie.streaming}</span>
+            <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{movie.genre}</span>
+            <span className="text-gray-500">{movie.runtime}</span>
           </div>
         </div>
         <div className="text-right ml-4">
-          <div className="text-2xl font-bold text-green-400">{movie.vibeMatch}%</div>
-          <div className="text-xs text-amber-300">match</div>
+          <div className="text-2xl font-bold text-emerald-500">{movie.vibeMatch}%</div>
+          <div className="text-xs text-gray-400">match</div>
         </div>
       </div>
-      {movie.director && (<div className="mt-2"><span className="text-amber-400 text-sm">Dir: </span><span className="text-white text-sm">{movie.director}</span></div>)}
+      {movie.director && (<div className="mt-2"><span className="text-orange-500 text-sm">Dir: </span><span className="text-gray-700 text-sm">{movie.director}</span></div>)}
       {movie.cast && movie.cast.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
-          {movie.cast.slice(0, 3).map((actor, idx) => (<span key={idx} className="bg-white/5 text-amber-100 px-2 py-0.5 rounded text-xs">{actor}</span>))}
-          {movie.cast.length > 3 && <span className="text-amber-400 text-xs">+{movie.cast.length - 3} more</span>}
+          {movie.cast.slice(0, 3).map((actor, idx) => (<span key={idx} className="bg-orange-50 text-gray-600 px-2 py-0.5 rounded text-xs">{actor}</span>))}
+          {movie.cast.length > 3 && <span className="text-orange-400 text-xs">+{movie.cast.length - 3} more</span>}
         </div>
       )}
-      <p className="text-orange-100 mt-3">{movie.pitch}</p>
+      <p className="text-gray-600 mt-3">{movie.pitch}</p>
       <div className="flex gap-2 mt-4">
-        <button onClick={() => onSelect(movie)} className="flex-1 py-2 bg-amber-500/20 text-amber-200 rounded-xl hover:bg-amber-500/30 text-sm">📖 Reviews & Details</button>
-        <button onClick={() => onSeenIt(movie, index)} disabled={isSwapping} className="py-2 px-4 bg-green-500/20 text-green-300 rounded-xl hover:bg-green-500/30 text-sm disabled:opacity-50">{isSwapping ? '🔄' : '👁️ Seen It'}</button>
+        <button onClick={() => onSelect(movie)} className="flex-1 py-2 bg-orange-50 text-orange-600 rounded-2xl hover:bg-orange-100 text-sm font-medium">📖 Reviews & Details</button>
+        <button onClick={() => onSeenIt(movie, index)} disabled={isSwapping} className="py-2 px-4 bg-emerald-50 text-emerald-600 rounded-2xl hover:bg-emerald-100 text-sm font-medium disabled:opacity-50">{isSwapping ? '🔄' : '👁️ Seen It'}</button>
       </div>
     </div>
   );
@@ -856,8 +860,8 @@ export default function MangoMovies() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center">
-      <div className="text-center"><div className="animate-bounce text-6xl mb-4">🥭</div><div className="text-white text-xl">Loading...</div></div>
+    <div className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center">
+      <div className="text-center"><div className="animate-bounce text-6xl mb-4">🥭</div><div className="text-gray-600 text-xl">Loading...</div></div>
     </div>
   );
 
@@ -865,42 +869,47 @@ export default function MangoMovies() {
   if (selectedMovie) return <MovieDetailModal movie={selectedMovie} profile={profile} onClose={() => setSelectedMovie(null)} onMarkWatched={markAsWatched} />;
 
   if (stage === 'intro') return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900">
+    <div className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 relative overflow-hidden">
+      {/* Decorative gradient blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-200/40 to-amber-200/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-orange-200/30 to-yellow-200/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-r from-amber-100/40 to-orange-100/40 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
+      
       {/* Top bar with profile icon */}
-      <div className="flex justify-end p-4 pt-14">
+      <div className="relative flex justify-end p-4 pt-14">
         <button 
           onClick={() => setEditingProfile(true)} 
-          className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-amber-200 hover:bg-white/20 hover:text-white transition-all"
+          className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
         >
           <User size={20} />
         </button>
       </div>
       
-      <div className="flex items-center justify-center px-4 pb-8">
+      <div className="relative flex items-center justify-center px-4 pb-8">
         <div className="max-w-lg w-full">
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🥭🎬🌴</div>
-            <h1 className="text-5xl font-bold text-white mb-2">Mango</h1>
-            <p className="text-amber-200 text-lg">{profile.name ? `Hey ${profile.name}! ` : ''}Grab your dried mango, let&apos;s find your flick.</p>
+            <h1 className="text-5xl font-bold text-gray-800 mb-2">Mango</h1>
+            <p className="text-gray-500 text-lg">{profile.name ? `Hey ${profile.name}! ` : ''}Grab your dried mango, let&apos;s find your flick.</p>
           </div>
-          <div className="bg-white/10 backdrop-blur rounded-2xl p-5 mb-6 border border-amber-500/30">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-5 mb-6 shadow-xl shadow-orange-100/50 border border-orange-100">
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-white font-semibold">Your Profile</h2>
-              <button onClick={() => setEditingProfile(true)} className="text-amber-300 hover:text-white text-sm">Edit ✏️</button>
+              <h2 className="text-gray-800 font-semibold">Your Profile</h2>
+              <button onClick={() => setEditingProfile(true)} className="text-orange-500 hover:text-orange-600 text-sm font-medium">Edit ✏️</button>
             </div>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-amber-300">Type:</span><span className="text-white">{VIEWER_TYPES.find(t => t.id === profile.viewerType)?.label}</span></div>
-              <div className="flex justify-between"><span className="text-amber-300">Love:</span><span className="text-green-400">{profile.lovedGenres.slice(0, 3).join(', ')}</span></div>
-              <div className="flex justify-between"><span className="text-amber-300">Streaming:</span><span className="text-white">{profile.streamingServices.length} services</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">Type:</span><span className="text-gray-800">{VIEWER_TYPES.find(t => t.id === profile.viewerType)?.label}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">Love:</span><span className="text-emerald-600">{profile.lovedGenres.slice(0, 3).join(', ')}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">Streaming:</span><span className="text-gray-800">{profile.streamingServices.length} services</span></div>
               {profile.recentlyWatched.filter(m => m.trim()).length > 0 && (
-                <div className="flex justify-between"><span className="text-amber-300">Seen:</span><span className="text-orange-300">{profile.recentlyWatched.filter(m => m.trim()).length} movies tracked</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Seen:</span><span className="text-orange-500">{profile.recentlyWatched.filter(m => m.trim()).length} movies tracked</span></div>
               )}
             </div>
           </div>
-          <button onClick={startQuiz} className="w-full py-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-500 text-white font-bold text-xl rounded-xl hover:from-yellow-500 hover:via-orange-600 hover:to-amber-600 transition-all transform hover:scale-[1.02] shadow-lg shadow-orange-500/30">
+          <button onClick={startQuiz} className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xl rounded-3xl hover:from-orange-600 hover:to-amber-600 transition-all transform hover:scale-[1.02] shadow-lg shadow-orange-300/50">
             🥭 What&apos;s Your Mood Tonight? →
           </button>
-          {error && <div className="mt-4 bg-red-500/20 border border-red-400 rounded-xl p-4 text-red-200 text-center">{error}</div>}
+          {error && <div className="mt-4 bg-red-50 border border-red-200 rounded-3xl p-4 text-red-600 text-center">{error}</div>}
         </div>
       </div>
     </div>
@@ -923,34 +932,38 @@ export default function MangoMovies() {
     
     return (
       <div 
-        className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900"
+        className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 relative overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={createSwipeEnd(goBack)}
       >
+        {/* Decorative gradient blobs */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-orange-200/30 to-amber-200/30 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-amber-200/40 to-orange-200/40 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
+        
         {/* Top bar with back button */}
-        <div className="flex justify-start p-4 pt-14">
+        <div className="relative flex justify-start p-4 pt-14">
           <button 
             onClick={goBack}
-            className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-amber-200 hover:bg-white/20 hover:text-white transition-all"
+            className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
           >
             <ChevronLeft size={24} />
           </button>
         </div>
         
-        <div className="flex items-center justify-center px-4 pb-8">
+        <div className="relative flex items-center justify-center px-4 pb-8">
           <div className="max-w-lg w-full">
             <div className="mb-8">
-              <div className="flex justify-between text-amber-200 text-sm mb-2"><span>Question {currentQuestion + 1} of {questions.length}</span><span>🥭</span></div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 transition-all" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }} />
+              <div className="flex justify-between text-gray-500 text-sm mb-2"><span>Question {currentQuestion + 1} of {questions.length}</span><span>🥭</span></div>
+              <div className="h-2 bg-orange-100 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-orange-400 to-amber-400 transition-all" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }} />
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-amber-500/30">
-              <h2 className="text-2xl font-bold text-white mb-6">{q.question}</h2>
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl shadow-orange-100/50 border border-orange-100">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">{q.question}</h2>
               <div className="space-y-3">
                 {q.options.map(option => (
                   <button key={option.value} onClick={() => handleAnswer(q.id, option)}
-                    className="w-full p-4 bg-white/5 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-orange-500/20 border border-white/10 hover:border-amber-400 rounded-xl text-left text-white transition-all">
+                    className="w-full p-4 bg-orange-50/50 hover:bg-orange-100 border border-orange-100 hover:border-orange-300 rounded-2xl text-left text-gray-700 transition-all">
                     {option.label}
                   </button>
                 ))}
@@ -963,37 +976,43 @@ export default function MangoMovies() {
   }
 
   if (stage === 'loading') return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center">
-      <div className="text-center">
+    <div className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-200/40 to-amber-200/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-orange-200/30 to-yellow-200/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="relative text-center">
         <div className="text-6xl mb-4 animate-bounce">🥭</div>
-        <h2 className="text-2xl font-bold text-white mb-2">{loadingMessage}</h2>
-        <p className="text-amber-200">Hang tight</p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">{loadingMessage}</h2>
+        <p className="text-gray-500">Hang tight</p>
       </div>
     </div>
   );
 
   if (stage === 'results' && recommendations) return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900"
+      className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 relative overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={createSwipeEnd(() => setStage('intro'))}
     >
+      {/* Decorative gradient blobs */}
+      <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-orange-200/30 to-amber-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-1/3 left-0 w-64 h-64 bg-gradient-to-tr from-amber-200/20 to-orange-200/20 rounded-full blur-3xl -translate-x-1/2" />
+      
       {/* Top bar with back button */}
-      <div className="flex justify-start p-4 pt-14">
+      <div className="relative flex justify-start p-4 pt-14">
         <button 
           onClick={() => setStage('intro')}
-          className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-amber-200 hover:bg-white/20 hover:text-white transition-all"
+          className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
         >
           <ChevronLeft size={24} />
         </button>
       </div>
       
-      <div className="px-4 pb-8">
+      <div className="relative px-4 pb-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-6">
             <div className="text-4xl mb-2">🥭🎬🥭</div>
-            <h1 className="text-3xl font-bold text-white mb-2">Your Fresh Picks</h1>
-            <p className="text-amber-200 italic">&quot;{recommendations.moodSummary}&quot;</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Your Fresh Picks</h1>
+            <p className="text-gray-500 italic">&quot;{recommendations.moodSummary}&quot;</p>
           </div>
           <div className="space-y-4 mb-8">
             {recommendations.recommendations?.map((movie, index) => (
@@ -1001,10 +1020,10 @@ export default function MangoMovies() {
             ))}
           </div>
           <div className="flex gap-4">
-            <button onClick={startQuiz} className="flex-1 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 border border-amber-500/30 flex items-center justify-center gap-2">
+            <button onClick={startQuiz} className="flex-1 py-4 bg-white/80 text-gray-700 font-bold rounded-3xl hover:bg-white shadow-lg shadow-orange-100/50 border border-orange-100 flex items-center justify-center gap-2">
               <RefreshCw size={20} /> Refresh
             </button>
-            <button onClick={() => setStage('enjoy')} className="flex-1 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2">
+            <button onClick={() => setStage('enjoy')} className="flex-1 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-3xl shadow-lg shadow-orange-300/50 flex items-center justify-center gap-2">
               <Check size={20} /> Done
             </button>
           </div>
@@ -1015,17 +1034,19 @@ export default function MangoMovies() {
 
   if (stage === 'enjoy') return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-900 flex items-center justify-center p-4"
+      className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-4 relative overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={createSwipeEnd(() => setStage('intro'))}
     >
-      <div className="text-center">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-200/40 to-amber-200/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-orange-200/30 to-yellow-200/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="relative text-center">
         <div className="text-8xl mb-6">🥭🍿</div>
-        <h1 className="text-4xl font-bold text-white mb-4">Enjoy your movie!</h1>
-        <p className="text-amber-200 text-lg mb-8">Grab that dried mango and settle in.</p>
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">Enjoy your movie!</h1>
+        <p className="text-gray-500 text-lg mb-8">Grab that dried mango and settle in.</p>
         <button 
           onClick={() => setStage('intro')} 
-          className="px-8 py-3 bg-white/10 text-amber-200 rounded-xl hover:bg-white/20 border border-amber-500/30 flex items-center justify-center gap-2 mx-auto"
+          className="px-8 py-3 bg-white/80 text-gray-700 rounded-3xl hover:bg-white shadow-lg shadow-orange-100/50 border border-orange-100 flex items-center justify-center gap-2 mx-auto"
         >
           <Home size={18} /> Back to Home
         </button>

@@ -4,8 +4,8 @@
   "description": "Find your perfect movie",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#78350f",
-  "theme_color": "#92400e",
+  "background_color": "#fff7ed",
+  "theme_color": "#fff7ed",
   "orientation": "portrait",
   "icons": [
     {
