@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { User, ChevronLeft, RefreshCw, Check, Home } from 'lucide-react';
+import { User, ChevronLeft, RefreshCw, Check, Home, Heart, List, X } from 'lucide-react';
 
 // Types
 interface Profile {
@@ -26,6 +26,14 @@ interface Movie {
   runtime: string;
   vibeMatch: number;
   whyYou?: string;
+  streamingOptions?: StreamingOption[];
+}
+
+interface StreamingOption {
+  service: string;
+  type: 'subscription' | 'rent' | 'buy' | 'free';
+  price?: string;
+  link: string;
 }
 
 interface MoodAnswer {
@@ -684,16 +692,146 @@ function ProfileSetup({ onComplete, existingProfile }: { onComplete: (profile: P
   );
 }
 
+// Watchlist Modal Component
+function WatchlistModal({ 
+  watchlist, 
+  onClose, 
+  onRemove, 
+  onSelectMovie,
+  onMarkWatched 
+}: { 
+  watchlist: Movie[]; 
+  onClose: () => void; 
+  onRemove: (movie: Movie) => void;
+  onSelectMovie: (movie: Movie) => void;
+  onMarkWatched: (movie: Movie) => void;
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div className="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl">
+        <div className="p-4 border-b border-orange-100 flex justify-between items-center sticky top-0 bg-white">
+          <div className="flex items-center gap-2">
+            <Heart size={20} className="text-pink-500" fill="currentColor" />
+            <h2 className="text-xl font-bold text-gray-800">Watchlist ({watchlist.length})</h2>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2">
+            <X size={24} />
+          </button>
+        </div>
+        
+        <div className="p-4 overflow-y-auto max-h-[calc(85vh-80px)]">
+          {watchlist.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-2">💔</div>
+              <p className="text-gray-500">Your watchlist is empty</p>
+              <p className="text-gray-400 text-sm">Tap the heart on any movie to save it for later</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {watchlist.map((movie, idx) => (
+                <div key={`${movie.title}-${movie.year}-${idx}`} className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1" onClick={() => { onSelectMovie(movie); onClose(); }}>
+                      <h3 className="font-bold text-gray-800 cursor-pointer hover:text-orange-600">{movie.title}</h3>
+                      <div className="flex gap-2 text-xs mt-1">
+                        <span className="text-amber-600">{movie.year}</span>
+                        <span className="text-gray-500">{movie.genre}</span>
+                        <span className="text-gray-400">{movie.runtime}</span>
+                      </div>
+                      <p className="text-gray-500 text-sm mt-2 line-clamp-2">{movie.pitch}</p>
+                    </div>
+                    <div className="flex gap-1 ml-2">
+                      <button 
+                        onClick={() => { onMarkWatched(movie); onRemove(movie); }}
+                        className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-full"
+                        title="Mark as watched"
+                      >
+                        <Check size={18} />
+                      </button>
+                      <button 
+                        onClick={() => onRemove(movie)}
+                        className="p-2 text-gray-400 hover:bg-gray-100 hover:text-red-500 rounded-full"
+                        title="Remove from watchlist"
+                      >
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Movie Card Component
-function MovieCard({ movie, index, onSelect, onSeenIt, isSwapping }: { movie: Movie; index: number; onSelect: (movie: Movie) => void; onSeenIt: (movie: Movie, index: number) => void; isSwapping: boolean; }) {
+function MovieCard({ 
+  movie, 
+  index, 
+  onSelect, 
+  onSeenIt, 
+  isSwapping,
+  isInWatchlist,
+  onToggleWatchlist,
+}: { 
+  movie: Movie; 
+  index: number; 
+  onSelect: (movie: Movie) => void; 
+  onSeenIt: (movie: Movie, index: number) => void; 
+  isSwapping: boolean;
+  isInWatchlist: boolean;
+  onToggleWatchlist: (movie: Movie) => void;
+}) {
+  const [streamingOptions, setStreamingOptions] = useState<StreamingOption[]>([]);
+  const [loadingStreaming, setLoadingStreaming] = useState(true);
+
+  useEffect(() => {
+    const fetchStreaming = async () => {
+      setLoadingStreaming(true);
+      try {
+        const response = await fetch('/api/streaming', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: movie.title, year: movie.year })
+        });
+        const data = await response.json();
+        setStreamingOptions(data.streamingOptions || []);
+      } catch (err) {
+        console.error('Failed to fetch streaming:', err);
+      }
+      setLoadingStreaming(false);
+    };
+    fetchStreaming();
+  }, [movie.title, movie.year]);
+
+  const getStreamingIcon = (type: string) => {
+    switch (type) {
+      case 'subscription': return '✅';
+      case 'free': return '🆓';
+      case 'rent': return '💵';
+      case 'buy': return '🛒';
+      default: return '📺';
+    }
+  };
+
   return (
     <div className={`bg-white/80 backdrop-blur-sm rounded-3xl p-5 shadow-lg shadow-orange-100/50 border border-orange-100 hover:shadow-xl hover:shadow-orange-200/50 transition-all ${isSwapping ? 'opacity-50 animate-pulse' : ''}`}>
       <div className="flex justify-between items-start mb-2">
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-gray-800">{index + 1}. {movie.title}</h3>
+          <div className="flex items-start gap-2">
+            <h3 className="text-xl font-bold text-gray-800">{index + 1}. {movie.title}</h3>
+            <button 
+              onClick={() => onToggleWatchlist(movie)}
+              className={`p-1.5 rounded-full transition-all ${isInWatchlist ? 'bg-pink-100 text-pink-500' : 'bg-gray-100 text-gray-400 hover:bg-pink-50 hover:text-pink-400'}`}
+            >
+              <Heart size={16} fill={isInWatchlist ? 'currentColor' : 'none'} />
+            </button>
+          </div>
           <div className="flex gap-2 flex-wrap text-sm mt-1">
             <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-medium">{movie.year}</span>
-            <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded">{movie.streaming}</span>
             <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{movie.genre}</span>
             <span className="text-gray-500">{movie.runtime}</span>
           </div>
@@ -703,6 +841,38 @@ function MovieCard({ movie, index, onSelect, onSeenIt, isSwapping }: { movie: Mo
           <div className="text-xs text-gray-400">match</div>
         </div>
       </div>
+      
+      {/* Streaming Options */}
+      <div className="mt-3 mb-3">
+        {loadingStreaming ? (
+          <div className="text-xs text-gray-400">Loading streaming info...</div>
+        ) : streamingOptions.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5">
+            {streamingOptions.slice(0, 4).map((opt, idx) => (
+              <a 
+                key={idx}
+                href={opt.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-xs px-2 py-1 rounded-lg flex items-center gap-1 transition-all hover:scale-105 ${
+                  opt.type === 'subscription' ? 'bg-emerald-100 text-emerald-700' :
+                  opt.type === 'free' ? 'bg-blue-100 text-blue-700' :
+                  'bg-amber-100 text-amber-700'
+                }`}
+              >
+                {getStreamingIcon(opt.type)} {opt.service}
+                {opt.price && <span className="font-medium">{opt.price}</span>}
+              </a>
+            ))}
+            {streamingOptions.length > 4 && (
+              <span className="text-xs text-gray-400">+{streamingOptions.length - 4} more</span>
+            )}
+          </div>
+        ) : (
+          <div className="text-xs text-gray-400">Streaming info unavailable</div>
+        )}
+      </div>
+
       {movie.director && (<div className="mt-2"><span className="text-orange-500 text-sm">Dir: </span><span className="text-gray-700 text-sm">{movie.director}</span></div>)}
       {movie.cast && movie.cast.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
@@ -712,7 +882,7 @@ function MovieCard({ movie, index, onSelect, onSeenIt, isSwapping }: { movie: Mo
       )}
       <p className="text-gray-600 mt-3">{movie.pitch}</p>
       <div className="flex gap-2 mt-4">
-        <button onClick={() => onSelect(movie)} className="flex-1 py-2 bg-orange-50 text-orange-600 rounded-2xl hover:bg-orange-100 text-sm font-medium">📖 Reviews & Details</button>
+        <button onClick={() => onSelect(movie)} className="flex-1 py-2 bg-orange-50 text-orange-600 rounded-2xl hover:bg-orange-100 text-sm font-medium">📖 Details</button>
         <button onClick={() => onSeenIt(movie, index)} disabled={isSwapping} className="py-2 px-4 bg-emerald-50 text-emerald-600 rounded-2xl hover:bg-emerald-100 text-sm font-medium disabled:opacity-50">{isSwapping ? '🔄' : '👁️ Seen It'}</button>
       </div>
     </div>
@@ -742,6 +912,8 @@ export default function MangoMovies() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [swappingIndex, setSwappingIndex] = useState<number | null>(null);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
+  const [watchlist, setWatchlist] = useState<Movie[]>([]);
+  const [showWatchlist, setShowWatchlist] = useState(false);
   const sessionContext = useRef<{ moodProfile: MoodAnswer[] | null; excludedMovies: string[] }>({ moodProfile: null, excludedMovies: [] });
   const touchStartX = useRef<number | null>(null);
   
@@ -777,6 +949,8 @@ export default function MangoMovies() {
     try {
       const stored = localStorage.getItem('mango-profile');
       if (stored) setProfile(JSON.parse(stored));
+      const storedWatchlist = localStorage.getItem('mango-watchlist');
+      if (storedWatchlist) setWatchlist(JSON.parse(storedWatchlist));
     } catch (err) { console.log('No existing profile'); }
     setLoading(false);
   };
@@ -794,6 +968,44 @@ export default function MangoMovies() {
     const movieStr = `${movie.title} (${movie.year})`;
     const updatedWatched = [movieStr, ...profile.recentlyWatched.filter(m => m !== movieStr)].slice(0, 20);
     saveProfile({ ...profile, recentlyWatched: updatedWatched });
+    // Also remove from watchlist if present
+    removeFromWatchlist(movie);
+  };
+
+  const isInWatchlist = (movie: Movie) => {
+    return watchlist.some(m => m.title === movie.title && m.year === movie.year);
+  };
+
+  const toggleWatchlist = (movie: Movie) => {
+    let newWatchlist: Movie[];
+    if (isInWatchlist(movie)) {
+      newWatchlist = watchlist.filter(m => !(m.title === movie.title && m.year === movie.year));
+    } else {
+      newWatchlist = [...watchlist, movie];
+    }
+    setWatchlist(newWatchlist);
+    localStorage.setItem('mango-watchlist', JSON.stringify(newWatchlist));
+  };
+
+  const removeFromWatchlist = (movie: Movie) => {
+    const newWatchlist = watchlist.filter(m => !(m.title === movie.title && m.year === movie.year));
+    setWatchlist(newWatchlist);
+    localStorage.setItem('mango-watchlist', JSON.stringify(newWatchlist));
+  };
+
+  const fetchStreamingInfo = async (movie: Movie): Promise<StreamingOption[]> => {
+    try {
+      const response = await fetch('/api/streaming', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: movie.title, year: movie.year })
+      });
+      const data = await response.json();
+      return data.streamingOptions || [];
+    } catch (err) {
+      console.error('Failed to fetch streaming info:', err);
+      return [];
+    }
   };
 
   const startQuiz = useCallback(() => {
@@ -867,16 +1079,40 @@ export default function MangoMovies() {
 
   if (!profile || editingProfile) return <ProfileSetup onComplete={saveProfile} existingProfile={editingProfile ? profile : null} />;
   if (selectedMovie) return <MovieDetailModal movie={selectedMovie} profile={profile} onClose={() => setSelectedMovie(null)} onMarkWatched={markAsWatched} />;
+  
+  // Render watchlist modal as overlay
+  const watchlistModal = showWatchlist ? (
+    <WatchlistModal 
+      watchlist={watchlist} 
+      onClose={() => setShowWatchlist(false)} 
+      onRemove={removeFromWatchlist}
+      onSelectMovie={setSelectedMovie}
+      onMarkWatched={markAsWatched}
+    />
+  ) : null;
 
   if (stage === 'intro') return (
+    <>
+      {watchlistModal}
     <div className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 relative overflow-hidden">
       {/* Decorative gradient blobs */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-200/40 to-amber-200/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-orange-200/30 to-yellow-200/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-r from-amber-100/40 to-orange-100/40 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
       
-      {/* Top bar with profile icon */}
-      <div className="relative flex justify-end p-4 pt-16">
+      {/* Top bar with watchlist and profile icons */}
+      <div className="relative flex justify-between items-center p-4 pt-16">
+        {watchlist.length > 0 ? (
+          <button 
+            onClick={() => setShowWatchlist(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white/80 shadow-lg rounded-full text-pink-500 hover:bg-white transition-all"
+          >
+            <Heart size={18} fill="currentColor" />
+            <span className="font-medium">{watchlist.length}</span>
+          </button>
+        ) : (
+          <div /> 
+        )}
         <button 
           onClick={() => setEditingProfile(true)} 
           className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
@@ -913,6 +1149,7 @@ export default function MangoMovies() {
         </div>
       </div>
     </div>
+    </>
   );
 
   if (stage === 'questions') {
@@ -988,23 +1225,34 @@ export default function MangoMovies() {
   );
 
   if (stage === 'results' && recommendations) return (
-    <div 
-      className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 relative overflow-hidden"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={createSwipeEnd(() => setStage('intro'))}
-    >
+    <>
+      {watchlistModal}
+      <div 
+        className="min-h-screen min-h-[-webkit-fill-available] bg-gradient-to-br from-orange-50 via-white to-amber-50 relative overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={createSwipeEnd(() => setStage('intro'))}
+      >
       {/* Decorative gradient blobs */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-orange-200/30 to-amber-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-1/3 left-0 w-64 h-64 bg-gradient-to-tr from-amber-200/20 to-orange-200/20 rounded-full blur-3xl -translate-x-1/2" />
       
-      {/* Top bar with back button */}
-      <div className="relative flex justify-start p-4 pt-16">
+      {/* Top bar with back button and watchlist */}
+      <div className="relative flex justify-between items-center p-4 pt-16">
         <button 
           onClick={() => setStage('intro')}
           className="w-10 h-10 bg-white/80 shadow-lg rounded-full flex items-center justify-center text-orange-500 hover:bg-white hover:text-orange-600 transition-all"
         >
           <ChevronLeft size={24} />
         </button>
+        {watchlist.length > 0 && (
+          <button 
+            onClick={() => setShowWatchlist(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white/80 shadow-lg rounded-full text-pink-500 hover:bg-white transition-all"
+          >
+            <Heart size={18} fill="currentColor" />
+            <span className="font-medium">{watchlist.length}</span>
+          </button>
+        )}
       </div>
       
       <div className="relative px-4 pb-8">
@@ -1016,7 +1264,16 @@ export default function MangoMovies() {
           </div>
           <div className="space-y-4 mb-8">
             {recommendations.recommendations?.map((movie, index) => (
-              <MovieCard key={`${movie.title}-${movie.year}-${index}`} movie={movie} index={index} onSelect={setSelectedMovie} onSeenIt={handleSeenIt} isSwapping={swappingIndex === index} />
+              <MovieCard 
+                key={`${movie.title}-${movie.year}-${index}`} 
+                movie={movie} 
+                index={index} 
+                onSelect={setSelectedMovie} 
+                onSeenIt={handleSeenIt} 
+                isSwapping={swappingIndex === index}
+                isInWatchlist={isInWatchlist(movie)}
+                onToggleWatchlist={toggleWatchlist}
+              />
             ))}
           </div>
           <div className="flex gap-4">
@@ -1030,6 +1287,7 @@ export default function MangoMovies() {
         </div>
       </div>
     </div>
+    </>
   );
 
   if (stage === 'enjoy') return (

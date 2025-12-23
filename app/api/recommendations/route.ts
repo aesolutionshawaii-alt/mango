@@ -31,9 +31,11 @@ Viewer Type: ${profile.viewerType}
 Genres they LOVE: ${profile.lovedGenres.join(', ')}
 Genres they HATE: ${profile.hatedGenres.join(', ') || 'None'}
 Favorite movies: ${favoritesList.length > 0 ? favoritesList.join(', ') : 'Not provided'}
-DO NOT recommend these (already seen): ${allExcluded.length > 0 ? allExcluded.join(', ') : 'None'}
 Hard limits: ${hardLimitLabels.length > 0 ? hardLimitLabels.join(', ') : 'None'}
 Streaming services: ${profile.streamingServices.join(', ')}
+
+## MOVIES TO EXCLUDE (ALREADY WATCHED - NEVER RECOMMEND THESE)
+${allExcluded.length > 0 ? allExcluded.join('\n') : 'None'}
 
 ## TONIGHT'S MOOD
 ${moodProfile.map((m: { question: string; answer: string }) => `- ${m.question}: ${m.answer}`).join('\n')}`;
@@ -42,7 +44,10 @@ ${moodProfile.map((m: { question: string; answer: string }) => `- ${m.question}:
 
 ${contextPrompt}
 
-IMPORTANT: Include the director and top 3-4 main actors for each movie.
+CRITICAL RULES:
+1. NEVER recommend any movie from the "MOVIES TO EXCLUDE" list - they have already seen these!
+2. Include the director and top 3-4 main actors for each movie
+3. Only suggest movies actually available on their streaming services
 
 Respond ONLY with valid JSON:
 {
